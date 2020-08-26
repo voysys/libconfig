@@ -647,7 +647,21 @@ int config_read_file(config_t *config, const char *filename)
 {
   int ret, ok = 0;
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
+  || defined(WIN64) || defined(_WIN64) || defined(__WIN64__))
+  const int filename_wsize = MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
+  const int mode_wsize = MultiByteToWideChar(CP_UTF8, 0, "rt", -1, NULL, 0);
+  wchar_t* filename_w = (wchar_t*)malloc(filename_wsize);
+  wchar_t* mode_w = (wchar_t*)malloc(mode_wsize);
+  MultiByteToWideChar(CP_UTF8, 0, filename, -1, filename_w, filename_wsize);
+  MultiByteToWideChar(CP_UTF8, 0, "rt", -1, mode_w, mode_wsize);
+  FILE *stream = _wfopen((const wchar_t*)filename_w, (const wchar_t*)mode_w);
+  free((char*)filename_w);
+  free((char*)mode_w);
+#else
   FILE *stream = fopen(filename, "rt");
+#endif
+
   if(stream != NULL)
   {
     // On some operating systems, fopen() succeeds on a directory.
