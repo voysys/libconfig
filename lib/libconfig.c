@@ -682,41 +682,6 @@ int config_read_file(config_t *config, const char *filename)
 
 /* ------------------------------------------------------------------------- */
 
-int config_write_file(config_t *config, const char *filename)
-{
-  FILE *stream = fopen(filename, "wt");
-  if(stream == NULL)
-  {
-    config->error_text = __io_error;
-    config->error_type = CONFIG_ERR_FILE_IO;
-    return(CONFIG_FALSE);
-  }
-
-  config_write(config, stream);
-
-  if(config_get_option(config, CONFIG_OPTION_FSYNC))
-  {
-    int fd = fileno(stream);
-
-    if(fd >= 0)
-    {
-      if(fsync(fd) != 0)
-      {
-        fclose(stream);
-        config->error_text = __io_error;
-        config->error_type = CONFIG_ERR_FILE_IO;
-        return(CONFIG_FALSE);
-      }
-    }
-  }
-
-  fclose(stream);
-  config->error_type = CONFIG_ERR_NONE;
-  return(CONFIG_TRUE);
-}
-
-/* ------------------------------------------------------------------------- */
-
 void config_destroy(config_t *config)
 {
   __config_setting_destroy(config->root);

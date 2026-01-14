@@ -53,16 +53,6 @@ char *libconfig_strbuf_release(strbuf_t *buf)
 
 /* ------------------------------------------------------------------------- */
 
-void libconfig_strbuf_append_string(strbuf_t *buf, const char *s)
-{
-  size_t len = strlen(s);
-  libconfig_strbuf_ensure_capacity(buf, len);
-  strcpy(buf->string + buf->length, s);
-  buf->length += len;
-}
-
-/* ------------------------------------------------------------------------- */
-
 void libconfig_strbuf_append_char(strbuf_t *buf, char c)
 {
   libconfig_strbuf_ensure_capacity(buf, 1);
